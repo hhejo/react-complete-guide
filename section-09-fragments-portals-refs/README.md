@@ -1,36 +1,46 @@
 ## Fragments, Portals, Refs
 
+JSX는 두 개 이상 리턴할 수 없기 때문에 `<div></div>`로 감싸거나 `[]`(배열)로 리턴
 
+### `<div>` soup
 
-JSX의 제한 사항... 두 개 이상 리턴 불가 -> div로 감싸기 or 배열(키 주고)로 리턴
+그렇게 계속 `div`로 감싸면 CSS 스타일링이 나빠지고, 렌더링할 것이 많아져 성능 저하됨 (불필요하고 중첩되는 div들)
 
-`<div>` soup
-
--> CSS 스타일링 망칠 수 있음, 렌더링할 게 많아서 성능 저하됨 (불필요한 내용 렌더링)
-
-
-
-Wrapper.js 정의하고 아무것도 없이 칠드런 리턴
+해결하기 위해 감쌀 `Wrapper.js` 정의하고 아무것도 없이 `props.children` 리턴
 
 
 
-리액트 조각
+### Fragments
 
-Wrapper는 우리가 직접 작성하지 않아도 됨! -> 리액트에서 제공
+React 조각
 
-프래그먼트 컴포넌트
+리액트에서 제공하는 fragment로 Wrapper는 직접 작성하지 않아도 됨
 
-`<React.Fragment></React.Fragment>`
+`Fragment Components` 두 가지 방식
 
-`<></>`
+- `<React.Fragment></React.Fragment>`
 
-import 방식에 따라 `<Fragment></Fragment>` 가능
+- `<></>`
 
-`import React, { Fragment } from "react";`
+```javascript
+import React, { Fragment } from "react";
+```
+
+`<Fragment></Fragment>`도 가능
 
 
 
-리액트 포탈 (React Portals) <- 비슷한 역할 함
+### Portals
+
+React 포탈
+
+
+
+
+
+
+
+
 
 modal은 semantic 관점에서 좋지 않음 -> 전체 페이지에 대한 오버레이이기 때문
 
