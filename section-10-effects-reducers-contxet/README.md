@@ -100,7 +100,8 @@ const [state, dispatchFn] = useReducer(reducerFn, initialState, initFn);
 - `state` : 최신 state 스냅샷
 - `dispatchFn` : state를 업데이트하는 함수. 새로운 state 값을 설정하는 대신 action을 dispatch
 - `reducerFn` : dispatch된 action을 가져 오는 함수. 최신 state 스냅샷을 자동으로 가져오고 새로운 업데이트된 state 반환 `(prevState, action) => newState`
-- 
+
+
 
 
 
