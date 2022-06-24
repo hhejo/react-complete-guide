@@ -10,7 +10,7 @@ JSX는 두 개 이상 리턴할 수 없기 때문에 `<div></div>`로 감싸거�
 
 
 
-### Fragments
+## Fragments
 
 React 조각
 
@@ -30,55 +30,177 @@ import React, { Fragment } from "react";
 
 
 
-### Portals
+## Portals
 
 React 포탈
 
-
-
-
-
-
-
-
-
 modal은 semantic 관점에서 좋지 않음 -> 전체 페이지에 대한 오버레이이기 때문
 
-리액트 포탈을 사용하면 됨
+React 포탈을 이용해서 코드를 다른 곳으로 옮김
 
-html 파일에 가서 div 추가
+1. component를 이동시킬 장소 필요
+2. component에게 그 곳에 포탈을 가져야 한다고 알려줌
 
-...
+`ReactDOM.createPortal(렌더링되어야 하는 리액트 노드(JSX), 이 요소가 렌더링될 실제 DOM의 컨테이너를 가리키는 포인터)`
+
+```html
+<!-- index.html -->
+<!-- ... -->
+<div id="backdrop-root"></div>
+<div id="overlay-root"></div>
+<div id="root"></div>
+<!-- ... -->
+```
+
+```javascript
+// UI/ErrorModal.js
+import ReactDom from "react-dom";
+
+const Backdrop = (props) => {
+  return <div className={classes.backdrop} onClick={props.onConfirm} />;
+};
+
+const ModalOverlay = (props) => {
+  return (
+    <Card className={classes.modal}>...</Card>
+  );
+};
+
+const ErrorModal = (props) => {
+  return (
+    <React.Fragment>
+      {ReactDom.createPortal(
+        <Backdrop onConfirm={props.onConfirm} />,
+        document.getElementById("backdrop-root")
+      )}
+      {ReactDom.createPortal(
+        <ModalOverlay
+          title={props.title}
+          message={props.message}
+          onConfirm={props.onConfirm}
+        />,
+        document.getElementById("overlay-root")
+      )}
+    </React.Fragment>
+  );
+};
+```
 
 
 
-렌더링된 HTML을 다른 곳으로 옮기는 것 -> 포탈
+## Refs
 
+레퍼런스
 
+다른 DOM 요소에 접근해 그것들로 작업할 수 있게 해줌
 
-또 다른 기능
+`useRef()`
 
-ref (레퍼런스)
-
-...
+state는 값만 읽기에는 불필요한 작업이 많기 때문에, 값만 읽고 싶다면 ref를 사용하는 것이 좋음
 
 원래 직접 DOM을 조작하면 안되지만 초기화정도는 해도 됨. 일반적으로는 하지 않는 게 좋음
 
-값만 읽고 싶다면 ref를 쓰자. state는 불필요한 작업이 많음 값만 읽기에
+```javascript
+// Users/AddUser.js
+import React, { useState, useRef } from "react";
+// ...
+const AddUser = (props) => {
+  const nameInputRef = useRef();
+  const ageInputRef = useRef();
+
+  // const [enteredUsername, setEnteredUsername] = useState("");
+  // const [enteredAge, setEnteredAge] = useState("");
+  const [error, setError] = useState();
+
+  const addUserHandler = (event) => {
+    event.preventDefault();
+
+    const enteredName = nameInputRef.current.value;
+    const enteredUserAge = ageInputRef.current.value;
+
+    if (enteredName.trim().length === 0 || enteredUserAge.trim().length === 0) {
+      setError({
+        title: "Invalid input",
+        message: "Please enter a valid name and age (non-empty values).",
+      });
+      return;
+    }
+    if (+enteredUserAge < 1) {
+      setError({
+        title: "Invalid age",
+        message: "Please enter a valid age (> 0).",
+      });
+      return;
+    }
+    props.onAddUser(enteredName, enteredUserAge);
+    // 주의해서 쓰자
+    nameInputRef.current.value = "";
+    ageInputRef.current.value = "";
+    // setEnteredUsername("");
+    // setEnteredAge("");
+  };
+
+  // const usernameChangeHandler = (event) => {
+  //   setEnteredUsername(event.target.value);
+  // };
+
+  // const ageChangeHandler = (event) => {
+  //   setEnteredAge(event.target.value);
+  // };
+
+  const errorHandler = () => {
+    setError(null);
+  };
+
+  return (
+    <Wrapper>
+      {error && (
+        <ErrorModal
+          title={error.title}
+          message={error.message}
+          onConfirm={errorHandler}
+        />
+      )}
+      <Card className={classes.input}>
+        <form onSubmit={addUserHandler}>
+          <label htmlFor="username">Username</label>
+          <input
+            id="username"
+            type="text"
+            // value={enteredUsername}
+            // onChange={usernameChangeHandler}
+            ref={nameInputRef}
+          />
+          <label htmlFor="age">Age (Years)</label>
+          <input
+            id="age"
+            type="number"
+            // value={enteredAge}
+            // onChange={ageChangeHandler}
+            ref={ageInputRef}
+          />
+          <Button type="submit">Add User</Button>
+        </form>
+      </Card>
+    </Wrapper>
+  );
+};
+
+export default AddUser;
+```
 
 
 
-uncontroled components (제어되지 않는 컴포넌트)
+### Uncontroled, Controled Components
 
-우리가 쓴 input (ref를 사용한)
+`Uncontroled Components` (제어되지 않는 컴포넌트)
 
-리액트롤 입력 요소의 state를 제어하지 않기 때문
+- 우리가 쓴 input (ref를 사용한)
+- 리액트롤 입력 요소의 state를 제어하지 않기 때문
 
-폼 컴포넌트는 브라우저에 의해 내부적으로 state를 가짐
+`Controled Components` (제어되는 컴포넌트)
 
-전에 useState로 했던 방식이 제어된 방식 (controled components)
-
-내부 state가 리액트에 의해 제어되기 때문
-
-
+- 폼 컴포넌트는 브라우저에 의해 내부적으로 state를 가짐
+- 전에 useState로 했던 방식이 제어된 방식 (controled components)
+- 내부 state가 리액트에 의해 제어되기 때문
 
