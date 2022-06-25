@@ -403,6 +403,8 @@ React Hook은 use로 시작하는 모든 함수
 
 ### Forward Refs
 
+ref를 사용자 커스텀 input에 넘길 수 있음
+
 예시) 제출 버튼을 클릭할 때, 양식이 비어있다면 자동 포커스하는 기능
 
 `useImperativeHandle`
