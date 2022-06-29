@@ -240,3 +240,10 @@ export default App;
 ```
 
 
+
+## Firebase
+
+-> Realtime Database 사용
+
+코드는 따로 참고
+
