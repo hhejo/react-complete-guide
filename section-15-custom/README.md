@@ -17,18 +17,62 @@
 // hooks/use-counter.js
 import { useState, useEffect } from "react";
 
-const useCounter = () => {
+const useCounter = (forwards = true) => {
   const [counter, setCounter] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCounter((prevCounter) => prevCounter + 1);
+      if (forwards) {
+        setCounter((prevCounter) => prevCounter + 1);
+      } else {
+        setCounter((prevCounter) => prevCounter - 1);
+      }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [forwards]);
+
+  return counter;
 };
 
 export default useCounter;
 ```
+
+커스텀 훅을 사용하는 것은 내장 훅을 사용하는 것과 동일. 함수 같이 호출 (함수이기 때문)
+
+매개변수 받을 수 있고, 함수도 받을 수 있음.
+
+의존성 추가해야 함
+
+```javascript
+// components/ForwardCounter.js
+import Card from "./Card";
+import useCounter from "../hooks/use-counter";
+
+const ForwardCounter = () => {
+  const counter = useCounter();
+
+  return <Card>{counter}</Card>;
+};
+
+export default ForwardCounter;
+```
+
+```javascript
+// components/BackwardCounter.js
+import Card from "./Card";
+import useCounter from "../hooks/use-counter";
+
+const BackwardCounter = () => {
+  const counter = useCounter(false);
+
+  return <Card>{counter}</Card>;
+};
+
+export default BackwardCounter;
+```
+
+
+
+
 
