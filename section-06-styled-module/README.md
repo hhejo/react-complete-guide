@@ -6,6 +6,8 @@ style을 태그에 주는 방법은 좋지 않음 (내용이 너무 길어짐)
 
 - `className={form-control ${!isValid ? 'invalid' : ''}}`
 
+`.trim()` 공백 제거 메서드
+
 
 
 ### Styled Components
@@ -52,6 +54,10 @@ props 전달 가능
 media query 적용 가능
 
 `&`로 대체
+
+styled components에도 props 전달 가능
+`className`으로 전달한다면?
+그냥 props로도 받을 수 있음
 
 
 
@@ -104,4 +110,3 @@ export default CourseInput;
 `import styles from "./???.module.css"`
 
 `styles`는 객체
-

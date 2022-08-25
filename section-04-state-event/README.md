@@ -1,3 +1,63 @@
+### Event
+```javascript
+const clickHandler = () => {};
+// ...
+<button onClick={clickHandler}>Click Me</button>
+```
+리액트는 JSX 코드를 평가할 때마다 컴포넌트 함수들을 호출
+컴포넌트 함수들은 모든 평가된 JSX 코드를 반환
+리액트는 계속해서 JSX에서 마주치는 컴포넌트 함수들을 호출
+더 이상 함수가 남아있지 않을 때까지
+리액트는 응용프로그램이 처음 렌더링되었을 때 그 모든 과정을 실행하고 끝
+업데이트하고 싶다면, 리액트에게 어떤 것이 변경되었고 특정 컴포넌트가 재평가되어야 한다고 말하려면
+state 사용
+
+### useState
+컴포넌트 함수에 변수를 갖고 있고 그것이 변경되었다 해도 리액트는 무시하고 다시 실행되지 않음
+`useState()` 훅
+훅들은 리액트 컴포넌트 함수 안에서만 호출 가능
+중첩된 함수, 컴포넌트 함수 밖 x
+
+```javascript
+const [현재상태값, 그것을업데이트하는함수] = useState(초깃값);
+```
+
+state가 변하면, 업데이트 함수를 호출
+JSX 코드에서 그것을 출력하기 위해 상태값을 사용하고 싶을 때마다 첫 번째 요소를 사용(현재 상태 값)
+리액트는 상태가 변할 때마다 컴포넌트 함수를 다시 실행하고 JSX 코드를 다시 평가
+
+useState는 여러 개 사용 가능
+
+### 사용자 입력
+input 태그에 `onChange` 속성 넣기
+양방향 바인딩 이용하려면 `value` 속성 넣기
+양방향 바인딩을 form으로 작업할 때 유용 (폼 전송 후 입력값 없앨 수 있음)
+`event.target.value`
+
+### 이전 state에 의존하는 state 업데이트
+값을 복사할 때 이전 state를 고려할 때 어떻게 상태를 업데이트?
+
+```javascript
+setUserInput({...userInput, enteredTitle: event.target.value}); // 좋지 않음
+```
+
+대신 함수를 전달함
+
+```javascript
+setUserInput((prevState) => { return {...prevState, enteredTitle: event.target.value}; }); // 옳은 방법
+```
+권장되는 방법
+
+### form 기본 동작 막기
+`event.preventDefault()`
+
+### 부모 컴포넌트로 상향식 통신 (state 끌어올리기)
+`props`로 함수를 받은 후에 매개변수로 값을 넣어줌
+
+
+
+---
+
 
 
 ### Event
@@ -402,4 +462,3 @@ export default NewExpense;
 `Stateless Component` v `Stateful Component`
 
 `Dumb Component` v `Smart Component`
-

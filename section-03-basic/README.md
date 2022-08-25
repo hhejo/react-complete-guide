@@ -113,6 +113,81 @@ React는 선언적 (Declarative Approach)
 
 
 
+### React
+
+### Components
+
+### Create React App
+```bash
+npx create-react-app my-app
+cd my-app
+npm start
+```
+
+### `package.json`
+프로젝트에서 어떤 패키지들을 사용하고 있는지 보여줌
+`npm install`
+`npm i`
+`node_modules` : 모든 종속 요소들을 가짐. 나의 로컬 컴퓨터에 다운로드한 서드 파티 패키지
+
+### `/src`
+모든 작업이 이루어지는 폴더
+
+### `index.js`
+최초로 실행되는 코드 (가장 먼저 실행되는 파일)
+```javascript
+import "./index.css";
+```
+위 같은 코드는 일반적인 JavaScript에서는 동작하지 않지만, 현재 프로젝트 설정으로는 가능
+`npm start`를 통해 `index.css` 파일을 애플리케이션 전체에 포함하도록 함
+`react`, `react-dom`
+`ReactDOM.createRoot()` : React로 구축할 사용자 인터페이스인 React 애플리케이션을 불러온 웹 페이지 상에서 어디에 배치해야 하는지 React에 알려줌
+`index.html` : React 애플리케이션 전체에서 사용하는 유일한 HTML 파일 (Single Page Application)
+
+### `App.js`
+3자 라이브러리나 우리의 JS 파일 중 하나라면 import할 때 `.js`는 생략 가능
+
+### JSX
+JavaScript XML
+크롬 개발자 도구 -> Sources 여기서 자바스크립트 파일 볼 수 있음
+`0.chunk.js`, `bundle.js`, `main.chunk.js` -> 전체 리액트 패키지 코드
+컴포넌트 이름은 대문자로 해야 리액트가 연결할 수 있음
+JSX 코드 조각마다 반드시 한 개의 루트 요소를 가짐
+
+### CSS
+```javascript
+import "./ExpenseItem.css";
+function ExpenseItem() { return (<div></div>); }
+export default ExpenseItem;
+```
+그리고 태그에 `class`가 아닌 `className`을 사용
+`className="expense-item"`, `className="expense-item__description"`
+
+### Props
+모든 속성을 받는 객체
+```javascript
+<ExpenseItem title={title} amount={amount} date={date} />
+//
+function ExpenseItem(props) {}
+```
+컴포넌트를 반복할 때는 `key` 속성을 주자
+
+### Composition
+컴포넌트를 다른 컴포넌트를 감싸기. 컴포넌트를 결합할 때마다 합성을 사용
+사용자 지정 컴포넌트를 일종의 컨텐츠를 감싸는 wrapper로 사용할 수 없음
+내장 html 요소인 div, h2 등은 작동하지만
+wrapper 컴포넌트를 만드려면 `props.children` 사용
+```javascript
+function Card(props) {
+  return <div className={"card" + props.className}>{props.children}</div>;
+}
+```
+
+
+---
+
+
+
 ### Components
 
 - React 앱의 최소 단위
@@ -252,4 +327,3 @@ return React.createElement('div', {},
   React.createElement(Expenses, {items: expenses})
 );
 ```
-
