@@ -1,6 +1,9 @@
 ## Fragments, Portals, Refs
 
 JSX는 두 개 이상 리턴할 수 없기 때문에 `<div></div>`로 감싸거나 `[]`(배열)로 리턴
+하지만 배열 안에 넣어서 리턴하면 각 값에 key를 줘야 하기 때문에 불편함
+
+
 
 ### `<div>` soup
 
@@ -55,15 +58,14 @@ React 포탈을 이용해서 코드를 다른 곳으로 옮김
 ```javascript
 // UI/ErrorModal.js
 import ReactDom from "react-dom";
+// import ReactDom from "react-dom/client"; // React 18 버전인 경우
 
 const Backdrop = (props) => {
   return <div className={classes.backdrop} onClick={props.onConfirm} />;
 };
 
 const ModalOverlay = (props) => {
-  return (
-    <Card className={classes.modal}>...</Card>
-  );
+  return <Card className={classes.modal}>...</Card>;
 };
 
 const ErrorModal = (props) => {
@@ -95,10 +97,26 @@ const ErrorModal = (props) => {
 다른 DOM 요소에 접근해 그것들로 작업할 수 있게 해줌
 
 `useRef()`
+HTML 태그에 ref 속성에 달아줌
+ref 값은 항상 객체, 항상 current 프롭을 가짐
+current 프롭은 그 ref가 연결된 실제 값을 가짐
+기본값을 정의하지 않아도 코드가 실행되자마자 ref 프롭 때문에 해당 input에 연결됨
+current 프롭에 저장된 것은 실제 DOM 노드 -> 조작하지 않는 것이 좋음 (DOM은 리액트에 의해서만 조작되어야 함)
 
+```javascript
+const nameInputRef = useRef();
+// ...
+console.log(nameInputRef.current.value);
+```
+
+제출 버튼을 눌렀을 때 읽을 수 있는 ref
 state는 값만 읽기에는 불필요한 작업이 많기 때문에, 값만 읽고 싶다면 ref를 사용하는 것이 좋음
 
 원래 직접 DOM을 조작하면 안되지만 초기화정도는 해도 됨. 일반적으로는 하지 않는 게 좋음
+
+```javascript
+nameInputRef.current.value = ""; // 자주 쓰지 말자
+```
 
 ```javascript
 // Users/AddUser.js
@@ -203,4 +221,3 @@ export default AddUser;
 - 폼 컴포넌트는 브라우저에 의해 내부적으로 state를 가짐
 - 전에 useState로 했던 방식이 제어된 방식 (controled components)
 - 내부 state가 리액트에 의해 제어되기 때문
-
