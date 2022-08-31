@@ -71,6 +71,24 @@ const numberOfCartItems = cartCtx.items.reduce(
 
 `concat()` : 배열에 새 항목 추가하고 새 배열을 반환하는 배열 메서드
 
+### Forward Ref
+
+사용자 정의 컴포넌트에서는 ref 프롭이 동작하지 않지만 방법은 있음
+
+해당 사용자 지정 컴포넌트로 가서 컴포넌트 함수를 `React.forwardRef()`로 감싸고 매개변수에 ref를 추가
+
+```javascript
+const Input = React.forwardRef((props, ref) => {
+  return <input ref={ref} {...props.input} />;
+});
+// ...
+// const amountInputRef = useRef();
+const submitHandler = (event) => {
+  const enteredAmount = amountInputRef.current.value; // 항상 value는 문자열
+};
+<Input ref={amountInputRef} />;
+```
+
 `findIndex()`
 
 `bind()`
