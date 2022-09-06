@@ -1,8 +1,6 @@
 # Section 15 Custom React Hooks
 
- 
-
-### Custom Hooks
+## Custom Hooks
 
 - 결국은 정규 함수. 안에 상태를 설정할 수 있는 로직을 포함한 함수
 - 정규 함수와는 다르게 다른 커스텀 훅을 포함한 다른 리액트 훅 사용 가능
@@ -12,6 +10,8 @@
 생성할 때 반드시 이름은 `use`로 시작해야 함
 
 `components` 폴더와 같은 위치에 `hooks` 폴더 생성하고 안에 파일 작성
+
+`setInterval()`, `clearInterval()`
 
 ```javascript
 // hooks/use-counter.js
@@ -72,7 +72,6 @@ const BackwardCounter = () => {
 export default BackwardCounter;
 ```
 
+HTTP 요청 관련에서 커스텀 훅으로 만들면 좋을 때가 있음
 
-
-
-
+## 사용자 정의 커스텀 HTTP 훅
