@@ -3,7 +3,6 @@
 ### `key` props
 
 - 아이템 추가하면 맨 위에 추가되는데, HTML에서는 맨 아래에 추가됐다고 표시됨 (근데 다시 업데이트로 위로 감)
-
 - React는 모든 목록을 체크해서 업데이트 -> 버그 발생할 수 있고, 성능 저하됨
 - `key`를 사용해서 해결 (map 메서드의 index를 줄 수도 있지만, 권장하지 않음)
 
@@ -38,8 +37,6 @@ const ExpensesList = (props) => {
 
 export default ExpensesList;
 ```
-
-
 
 ### 자식에게 받은 값으로 배열에 업데이트
 
@@ -80,8 +77,6 @@ const App = () => {
 export default App;
 ```
 
-
-
 ### filter (조건 필터링)
 
 - `&&` 연산자를 이용
@@ -108,6 +103,19 @@ const Expenses = (props) => {
   const filteredExpenses = props.items.filter((expense) => {
     return expense.date.getFullYear().toString() === filteredYear;
   });
+
+  let expensesContent = <p>No expenses found.</p>;
+
+  if (filteredExpenses.length > 0) {
+    expensesContent = filteredExpenses.map((expense) => (
+      <ExpenseItem
+        key={expense.id}
+        title={expense.title}
+        amount={expense.amount}
+        data={expense.date}
+      />
+    ));
+  }
 
   return (
     <div>
@@ -149,10 +157,7 @@ const Expenses = (props) => {
 };
 
 export default Expenses;
-
 ```
-
-
 
 ### 조건부 렌더링
 
@@ -201,15 +206,16 @@ export default NewExpense;
 
 컴포넌트 함수 안에 조건문으로 return을 두 개 이상 달아줄 수 있음
 
-
-
 ### 간단한 숫자 변환
 
 문자열 숫자 앞에 `+`를 붙임
 
 ### 문자열 변환
+
 숫자 옆에 문자열 더하기로 붙이기
 
 ### style 속성
+
 `style={{}}` 중괄호 두 개 겹치게 넣어야 함 (객체를 넣어야 하기 때문)
+
 속성 이름 중간에 `-`가 들어가면, 카멜 케이스로 변경
