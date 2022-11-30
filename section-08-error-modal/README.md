@@ -25,8 +25,6 @@ App
 6. `Button`
    - UI 컴포넌트
 
-
-
 React에서 `<label></label>`에 `htmlFor`를 `for`대신 사용
 
 `className` props 받고 `className` 2개 주기
@@ -35,13 +33,9 @@ React에서 `<label></label>`에 `htmlFor`를 `for`대신 사용
   <div className={`${classes.card} ${props.className}`}>{props.children}</div>
   ```
 
-
-
 `.trim()` : 문자열 양 끝 공백 제거
 
 `Math.random().toString()` : id 랜덤하게 줄 때 쓰는 방법
-
-
 
 ### Error Handler (with modal)
 
@@ -51,11 +45,8 @@ const ErrorModal = (props) => {
     <div>
       {/* div를 모달이 될 컴포넌트 앞에 작성 (모달 떴을 때 뒤에 가려줌) */}
       <div className={classes.backdrop} onClick={props.onConfirm} />
-      <Card className={classes.modal}>
-        // ..
-      </Card>
+      <Card className={classes.modal}>// ..</Card>
     </div>
   );
 };
 ```
-
