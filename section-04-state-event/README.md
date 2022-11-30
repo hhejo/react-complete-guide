@@ -1,21 +1,32 @@
 ### Event
+
 ```javascript
 const clickHandler = () => {};
 // ...
-<button onClick={clickHandler}>Click Me</button>
+<button onClick={clickHandler}>Click Me</button>;
 ```
+
 리액트는 JSX 코드를 평가할 때마다 컴포넌트 함수들을 호출
+
 컴포넌트 함수들은 모든 평가된 JSX 코드를 반환
+
 리액트는 계속해서 JSX에서 마주치는 컴포넌트 함수들을 호출
+
 더 이상 함수가 남아있지 않을 때까지
+
 리액트는 응용프로그램이 처음 렌더링되었을 때 그 모든 과정을 실행하고 끝
+
 업데이트하고 싶다면, 리액트에게 어떤 것이 변경되었고 특정 컴포넌트가 재평가되어야 한다고 말하려면
-state 사용
+`state` 사용
 
 ### useState
+
 컴포넌트 함수에 변수를 갖고 있고 그것이 변경되었다 해도 리액트는 무시하고 다시 실행되지 않음
+
 `useState()` 훅
+
 훅들은 리액트 컴포넌트 함수 안에서만 호출 가능
+
 중첩된 함수, 컴포넌트 함수 밖 x
 
 ```javascript
@@ -23,42 +34,73 @@ const [현재상태값, 그것을업데이트하는함수] = useState(초깃값)
 ```
 
 state가 변하면, 업데이트 함수를 호출
+
 JSX 코드에서 그것을 출력하기 위해 상태값을 사용하고 싶을 때마다 첫 번째 요소를 사용(현재 상태 값)
-리액트는 상태가 변할 때마다 컴포넌트 함수를 다시 실행하고 JSX 코드를 다시 평가
+
+리액트는 상태가 변할 때마다 **컴포넌트 함수를 다시 실행**하고 JSX 코드를 다시 평가
 
 useState는 여러 개 사용 가능
 
 ### 사용자 입력
+
 input 태그에 `onChange` 속성 넣기
+
 양방향 바인딩 이용하려면 `value` 속성 넣기
+
 양방향 바인딩을 form으로 작업할 때 유용 (폼 전송 후 입력값 없앨 수 있음)
+
+핸들러 함수에서 `event`를 받을 수 있음
+
+```javascript
+const changeHandler = (event) => console.log("changed");
+//
+<input onChange={changeHandler} />;
+```
+
 `event.target.value`
 
+### 여러 개의 state를 하나의 state로 관리하기
+
+```javascript
+// 여러 개의 state: enteredTitle, enteredAmount, enteredDate
+const [enteredTitle, setEnteredTitle] = useState("");
+const [enteredAmount, setEnteredAmount] = useState("");
+const [enteredDate, setEnteredDate] = useState("");
+// 하나의 state: userInput
+const [userInput, setUserInput] = useState({
+  enteredTitle: "",
+  enteredAmount: "",
+  enteredDate: "",
+});
+```
+
 ### 이전 state에 의존하는 state 업데이트
+
 값을 복사할 때 이전 state를 고려할 때 어떻게 상태를 업데이트?
 
 ```javascript
-setUserInput({...userInput, enteredTitle: event.target.value}); // 좋지 않음
+setUserInput({ ...userInput, enteredTitle: event.target.value }); // 좋지 않음
 ```
 
 대신 함수를 전달함
 
 ```javascript
-setUserInput((prevState) => { return {...prevState, enteredTitle: event.target.value}; }); // 옳은 방법
+setUserInput((prevState) => {
+  return { ...prevState, enteredTitle: event.target.value };
+}); // 옳은 방법
 ```
+
 권장되는 방법
 
 ### form 기본 동작 막기
+
 `event.preventDefault()`
 
 ### 부모 컴포넌트로 상향식 통신 (state 끌어올리기)
+
 `props`로 함수를 받은 후에 매개변수로 값을 넣어줌
 
-
-
 ---
-
-
 
 ### Event
 
@@ -77,8 +119,6 @@ const clickHandler = (event) => console.log(event.target.value);
 ```javascript
 <ExpenseForm onSaveExpenseData={saveExpenseDataHandler} />
 ```
-
-
 
 ### useState
 
@@ -111,8 +151,6 @@ const ExpenseItem = (props) => {
 };
 ```
 
-
-
 `useState`를 사용하지 않으면?
 
 ```javascript
@@ -142,15 +180,9 @@ const ExpenseItem = (props) => {
 
 React의 렌더링 방식 때문 (JSX의 작동 방식).. 이래서 State를 사용
 
-
-
 리액트 훅은 컴포넌트 함수에서 직접 호출되어야 함 (바깥에다가 `useState` 같은 것 사용할 수 없음)
 
-
-
 `onChange`가 `onInput`보다 모든 유형에 대해 변화를 잡을 수 있어 좋음
-
-
 
 ### useState 여러 개
 
@@ -161,14 +193,14 @@ React의 렌더링 방식 때문 (JSX의 작동 방식).. 이래서 State를 사
    ```javascript
    // ExpenseForm.js
    import React, { useState } from "react";
-   
+
    import "./ExpenseForm.css";
-   
+
    const ExpenseForm = (props) => {
      const [enteredTitle, setEnteredTitle] = useState("");
      const [enteredAmount, setEnteredAmount] = useState("");
      const [enteredDate, setEnteredDate] = useState("");
-   
+
      const titleChangeHandler = (event) => {
        setEnteredTitle(event.target.value);
      };
@@ -178,37 +210,49 @@ React의 렌더링 방식 때문 (JSX의 작동 방식).. 이래서 State를 사
      const dateChangeHandler = (event) => {
        setEnteredDate(event.target.value);
      };
-   
+
      const submitHandler = (event) => {
        event.preventDefault();
-   
+
        const expenseData = {
          title: enteredTitle,
          amount: enteredAmount,
          date: new Date(enteredDate),
        };
-   
+
        props.onSaveExpenseData(expenseData); // 부모에게 전달
        setEnteredTitle("");
        setEnteredAmount("");
        setEnteredDate("");
      };
-   
+
      return (
        // submit 버튼 대신 여기에 이벤트 연결
        <form onSubmit={submitHandler}>
          <div className="new-expense__controls">
            <div className="new-expense__control">
              <label>Title</label>
-             <input type="text" value={enteredTitle} onChange={titleChangeHandler} />
+             <input
+               type="text"
+               value={enteredTitle}
+               onChange={titleChangeHandler}
+             />
            </div>
            <div className="new-expense__control">
              <label>Amount</label>
-             <input type="number" value={enteredAmount} onChange={amountChangeHandler} />
+             <input
+               type="number"
+               value={enteredAmount}
+               onChange={amountChangeHandler}
+             />
            </div>
            <div className="new-expense__control">
              <label>Date</label>
-             <input type="date" value={enteredDate} onChange={dateChangeHandler} />
+             <input
+               type="date"
+               value={enteredDate}
+               onChange={dateChangeHandler}
+             />
            </div>
          </div>
          <div className="new-expense__actions">
@@ -218,7 +262,7 @@ React의 렌더링 방식 때문 (JSX의 작동 방식).. 이래서 State를 사
        </form>
      );
    };
-   
+
    export default ExpenseForm;
    ```
 
@@ -227,9 +271,9 @@ React의 렌더링 방식 때문 (JSX의 작동 방식).. 이래서 State를 사
    ```javascript
    // ExpenseForm.js
    import React, { useState } from "react";
-   
+
    import "./ExpenseForm.css";
-   
+
    const ExpenseForm = (props) => {
      // 객체를 이용해 작성
      const [userInput, setUserInput] = useState({
@@ -237,7 +281,7 @@ React의 렌더링 방식 때문 (JSX의 작동 방식).. 이래서 State를 사
        enteredAmount: "",
        enteredDate: "",
      });
-   
+
      const titleChangeHandler = (event) => {
        // // 잘못된 방식
        // setUserInput({
@@ -249,7 +293,7 @@ React의 렌더링 방식 때문 (JSX의 작동 방식).. 이래서 State를 사
          return { ...prevState, enteredTitle: event.target.value };
        });
      };
-   
+
      const amountChangeHandler = (event) => {
        // setUserInput({
        //   ...userInput,
@@ -259,7 +303,7 @@ React의 렌더링 방식 때문 (JSX의 작동 방식).. 이래서 State를 사
          return { ...prevState, enteredAmount: event.target.value };
        });
      };
-   
+
      const dateChangeHandler = (event) => {
        // setUserInput({
        //   ...userInput,
@@ -269,27 +313,39 @@ React의 렌더링 방식 때문 (JSX의 작동 방식).. 이래서 State를 사
          return { ...prevState, enteredDate: event.target.value };
        });
      };
-   
+
      const submitHandler = (event) => {
        event.preventDefault();
-   
+
        // ...
      };
-   
+
      return (
        <form onSubmit={submitHandler}>
          <div className="new-expense__controls">
            <div className="new-expense__control">
              <label>Title</label>
-             <input type="text" value={enteredTitle} onChange={titleChangeHandler} />
+             <input
+               type="text"
+               value={enteredTitle}
+               onChange={titleChangeHandler}
+             />
            </div>
            <div className="new-expense__control">
              <label>Amount</label>
-             <input type="number" value={enteredAmount} onChange={amountChangeHandler} />
+             <input
+               type="number"
+               value={enteredAmount}
+               onChange={amountChangeHandler}
+             />
            </div>
            <div className="new-expense__control">
              <label>Date</label>
-             <input type="date" value={enteredDate} onChange={dateChangeHandler} />
+             <input
+               type="date"
+               value={enteredDate}
+               onChange={dateChangeHandler}
+             />
            </div>
          </div>
          <div className="new-expense__actions">
@@ -298,11 +354,9 @@ React의 렌더링 방식 때문 (JSX의 작동 방식).. 이래서 State를 사
        </form>
      );
    };
-   
+
    export default ExpenseForm;
    ```
-
-
 
 ### Two way binding (양방향 바인딩)
 
@@ -342,7 +396,11 @@ const ExpenseForm = (props) => {
         <div className="new-expense__control">
           <label>Title</label>
           {/* value에 state 변수를 작성해 양방향 바인딩 */}
-          <input type="text" value={enteredTitle} onChange={titleChangeHandler} />
+          <input
+            type="text"
+            value={enteredTitle}
+            onChange={titleChangeHandler}
+          />
         </div>
         {/* ... */}
       </div>
@@ -355,8 +413,6 @@ const ExpenseForm = (props) => {
 
 export default ExpenseForm;
 ```
-
-
 
 ### Lifting State Up
 
@@ -405,11 +461,19 @@ const ExpenseForm = (props) => {
       <div className="new-expense__controls">
         <div className="new-expense__control">
           <label>Title</label>
-          <input type="text" value={enteredTitle} onChange={titleChangeHandler} />
+          <input
+            type="text"
+            value={enteredTitle}
+            onChange={titleChangeHandler}
+          />
         </div>
         <div className="new-expense__control">
           <label>Amount</label>
-          <input type="number" value={enteredAmount} onChange={amountChangeHandler} />
+          <input
+            type="number"
+            value={enteredAmount}
+            onChange={amountChangeHandler}
+          />
         </div>
         <div className="new-expense__control">
           <label>Date</label>
@@ -454,8 +518,6 @@ const NewExpense = (props) => {
 
 export default NewExpense;
 ```
-
-
 
 `Presentational Component` v `Stateful Component`
 
