@@ -8,8 +8,6 @@ style을 태그에 주는 방법은 좋지 않음 (내용이 너무 길어짐)
 
 `.trim()` 공백 제거 메서드
 
-
-
 ### Styled Components
 
 `npm install --save styled-components`
@@ -56,12 +54,14 @@ media query 적용 가능
 `&`로 대체
 
 styled components에도 props 전달 가능
+
 `className`으로 전달한다면?
+
 그냥 props로도 받을 수 있음
 
-
-
 ### CSS Modules
+
+해당 클래스의 이름을 고유하게 바꿔 파일 어딘가에서 겹치지 않게 할 수 있음
 
 ```javascript
 // CourseInput.js
