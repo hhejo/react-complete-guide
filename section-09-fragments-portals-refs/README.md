@@ -1,9 +1,8 @@
 ## Fragments, Portals, Refs
 
 JSX는 두 개 이상 리턴할 수 없기 때문에 `<div></div>`로 감싸거나 `[]`(배열)로 리턴
+
 하지만 배열 안에 넣어서 리턴하면 각 값에 key를 줘야 하기 때문에 불편함
-
-
 
 ### `<div>` soup
 
@@ -11,7 +10,10 @@ JSX는 두 개 이상 리턴할 수 없기 때문에 `<div></div>`로 감싸거�
 
 해결하기 위해 감쌀 `Wrapper.js` 정의하고 아무것도 없이 `props.children` 리턴
 
-
+```javascript
+const Wrapper = (props) => props.children;
+export default Wrapper;
+```
 
 ## Fragments
 
@@ -30,8 +32,6 @@ import React, { Fragment } from "react";
 ```
 
 `<Fragment></Fragment>`도 가능
-
-
 
 ## Portals
 
@@ -88,8 +88,6 @@ const ErrorModal = (props) => {
 };
 ```
 
-
-
 ## Refs
 
 레퍼런스
@@ -97,10 +95,15 @@ const ErrorModal = (props) => {
 다른 DOM 요소에 접근해 그것들로 작업할 수 있게 해줌
 
 `useRef()`
+
 HTML 태그에 ref 속성에 달아줌
+
 ref 값은 항상 객체, 항상 current 프롭을 가짐
+
 current 프롭은 그 ref가 연결된 실제 값을 가짐
+
 기본값을 정의하지 않아도 코드가 실행되자마자 ref 프롭 때문에 해당 input에 연결됨
+
 current 프롭에 저장된 것은 실제 DOM 노드 -> 조작하지 않는 것이 좋음 (DOM은 리액트에 의해서만 조작되어야 함)
 
 ```javascript
@@ -110,6 +113,7 @@ console.log(nameInputRef.current.value);
 ```
 
 제출 버튼을 눌렀을 때 읽을 수 있는 ref
+
 state는 값만 읽기에는 불필요한 작업이 많기 때문에, 값만 읽고 싶다면 ref를 사용하는 것이 좋음
 
 원래 직접 DOM을 조작하면 안되지만 초기화정도는 해도 됨. 일반적으로는 하지 않는 게 좋음
@@ -207,7 +211,13 @@ const AddUser = (props) => {
 export default AddUser;
 ```
 
+값만 읽으려고 할 때 (아무것도 변경하지 않고) `state`는 그렇게 좋지 않음 -> `ref`를 쓰자
 
+`state`를 키 로그 기록용으로 사용하는 것은 좋지 않음
+
+불필요한 코드 작업이 많기 때문
+
+값만 읽고 싶다면 `ref`를 사용해라
 
 ### Uncontroled, Controled Components
 
@@ -215,6 +225,7 @@ export default AddUser;
 
 - 우리가 쓴 input (ref를 사용한)
 - 리액트롤 입력 요소의 state를 제어하지 않기 때문
+- 리액트가 관여하지 않는다 (useRef는 단지 DOM 요소와 연결하기 위함)
 
 `Controled Components` (제어되는 컴포넌트)
 
