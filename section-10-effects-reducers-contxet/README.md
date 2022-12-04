@@ -18,10 +18,11 @@
 
 이 작업들은 normal component evaluation의 밖에서 일어나야 함
 
-로컬 스토리지 사용하기
-`localStorage.setItem("키", "값")`
-`localStorage.getItem("키")`
-크롬 개발자 도구 -> Application -> Storage -> Local Storage
+HTTP 요청에 대한 응답으로 어떤 state를 변경한다면, 무한 루프에 빠질 수 있음 -> 함수가 다시 실행될 때마다 요청을 보내면, 요청에 대한 응답으로 이 함수를 다시 트리거하는 state를 변경하게 되기 때문
+
+그래서 사이드 이펙트는 직접적으로 컴포넌트 함수에 들어가서는 안 됨
+
+-> 특별한 리액트 훅 사용 `useEffect`
 
 ### `useEffect()` Hook
 
@@ -41,6 +42,8 @@ useEffect(() => { ... }, [ dependencies ]);
 
    배열이 비어있다면 컴포넌트 함수가 처음으로 실행될 때 의존성이 변경된 것으로 간주 (의존성이 없었기 때문) -> 단 한 번만 실행. 이후로 의존성은 절대 변경되지 않기 때문
 
+헛 번째 함수에 어떤 사이드 이펙트 코드라도 넣을 수 있음. 해당 코드는 지정한 의존성이 변경된 경우에만 실행. 컴포넌트가 다시 렌더링될 때는 실행되지 않음
+
 ```javascript
 useEffect(() => {
   const storedUserLoggedInInformation = localStorage.getItem("isLoggedIn");
@@ -49,6 +52,16 @@ useEffect(() => {
   }
 }, []); // 빈 의존성 배열 (단 한 번만 실행)
 ```
+
+로컬 스토리지 사용하기
+
+`localStorage.setItem("키", "값")`
+
+`localStorage.getItem("키")`
+
+크롬 개발자 도구 -> Application -> Storage -> Local Storage
+
+---
 
 의존성 배열이 비었다고 없애지 말자
 
@@ -317,11 +330,13 @@ React 내부적으로 state를 관리할 수 있도록 해줌. 앱의 어떤 컴
 
 폴더의 이름은 `context`, `state`, `store`로 하는 경우가 많음
 
+파일은 케밥 케이스로 `auth-context.js` (파스칼 케이스는 컴포넌트를 뜻하기 때문)
+
 ### `createContext` 사용
 
 `React.createContext()`
 
-- `context` 객체 생성
+- `context` 객체 생성 (대부분의 경우 객체로 사용)
 
 - ```javascript
   // store/auth-context.js
@@ -329,10 +344,12 @@ React 내부적으로 state를 관리할 수 있도록 해줌. 앱의 어떤 컴
 
   const AuthContext = React.createContext({
     isLoggedIn: false,
-  });
+  }); // 따로 변수로 지정해서 빼도 될 듯
 
-  export default AuthContext;
+  export default AuthContext; // 왜 AuthContext?
   ```
+
+  `AuthContext`인 이유는 `AuthContext` 자체는 컴포넌트가 아니지만, 컴포넌트를 포함할 객체이기 때문
 
 Provider, Consumer
 
@@ -369,6 +386,8 @@ export default App;
 
 Consumer를 사용하는 방법
 
+데이터가 필요한 모든 것을 그 소비자로 감싸면 됨
+
 ```javascript
 // components/MainHeader/Navigation.js
 import React from "react";
@@ -379,6 +398,7 @@ import AuthContext from "../../store/auth-context";
 const Navigation = (props) => {
   return (
     <AuthContext.Consumer>
+      // 함수 사용, 인수로 컨텍스트 데이터 가져옴
       {(ctx) => {
         return (
           <nav className={classes.nav}>
@@ -463,6 +483,8 @@ export default Navigation;
 
 Context에 함수도 전달할 수 있음
 
+동적 컨텍스트
+
 ```javascript
 const logoutHandler = () => {};
 // ...
@@ -476,9 +498,7 @@ const logoutHandler = () => {};
 </AuthContext.Provider>;
 ```
 
-위 처럼 만들어도 되지만 AuthContext를 정의한 파일에 가서 기본 컨텍스트에 해당 함수 추가해주고 `() => {}` 달아 주는 것이 좋음
-
-IDE 자동완성이 가능
+위 처럼 만들어도 되지만 AuthContext를 정의한 파일에 가서 기본 컨텍스트에 해당 함수 추가해주고 `() => {}` 달아 주는 것이 좋음 -> IDE 자동완성이 가능
 
 ```javascript
 <button onClick={ctx.onLogout}>Logout</button>
@@ -525,7 +545,7 @@ useEffect도 넣을 수 있음
 
 App.js에서 context 관련 코드 다 제거하고
 
-index.js에서 <App />을 context 태그로 묶음
+index.js에서 `<App />`을 context 태그로 묶음
 
 코드 참고
 
@@ -543,16 +563,147 @@ React Hook은 use로 시작하는 모든 함수
 2. React Component Functions 혹은 Custom Hooks의 최상위 수준에서만 호출 (중첩 함수, 블록에서 x)
 3. `useEffect`는 항상, 참조하는 모든 항목을 의존성으로 `useEffect` 내부에 추가해야 함 (그렇지 않을 이유가 없다면)
 
+### Input 재사용
+
+`Input` 폴더 만들고 `Input.js` 만들기
+
+```javascript
+// Input.js
+import React from "react";
+
+import classes from "./Input.module.css";
+
+const Input = (props) => {
+  return (
+    <div
+      className={`${classes.control} ${
+        props.isValid === false ? classes.invalid : ""
+      }`}
+    >
+      <label htmlFor={props.id}>{props.label}</label>
+      <input
+        type={props.type}
+        id={props.id}
+        value={props.value}
+        onChange={props.onChange}
+        onBlur={props.onBlur}
+      />
+    </div>
+  );
+};
+
+export default Input;
+```
+
+```javascript
+// Login.js
+// ...
+const Login = () => {
+  // ...
+  return (
+    <Card className={classes.login}>
+      <form onSubmit={submitHandler}>
+        <Input
+          id="email"
+          label="E-Mail"
+          type="email"
+          isValid={emailIsValid}
+          value={emailState.value}
+          onChange={emailChangeHandler}
+          onBlur={validateEmailHandler}
+        />
+        <Input
+          id="password"
+          label="Password"
+          type="password"
+          isValid={passwordIsValid}
+          value={passwordState.value}
+          onChange={passwordChangeHandler}
+          onBlur={validatePasswordHandler}
+        />
+      </form>
+    </Card>
+  );
+};
+```
+
 ### Forward Refs
 
 ref를 사용자 커스텀 input에 넘길 수 있음
 
 예시) 제출 버튼을 클릭할 때, 양식이 비어있다면 자동 포커스하는 기능
 
-`useImperativeHandle`
+이메일 양식, 비밀번호 양식이 순서대로 있을 때, 제출했을 때 맞지 않는 제일 처음의 양식에 포커스 주기
+
+일반 input이라면 ref로 하면 되지만, 우리가 생성한 Input 컴포넌트에는?
+
+```javascript
+// Login.js
+// ...
+const Login = () => {
+  const emailInputRef = useRef();
+  const passwordInputRef = useRef();
+  // ...
+  const submitHandler = (event) => {
+    event.preventDefault();
+    if (formIsValid) {
+      authCtx.onLogin(emailState.value, passwordState.value);
+    } else if (!emailIsValid) {
+      emailInputRef.current.activate();
+    } else {
+      passwordInputRef.current.activate();
+    }
+  };
+  return (
+    <Card className={classes.login}>
+      <form onSubmit={submitHandler}>
+        <Input
+          ref={emailInputRef}
+          id="email"
+          label="E-Mail"
+          type="email"
+          isValid={emailIsValid}
+          value={emailState.value}
+          onChange={emailChangeHandler}
+          onBlur={validateEmailHandler}
+        />
+        <Input
+          ref={passwordInputRef}
+          id="password"
+          label="Password"
+          type="password"
+          isValid={passwordIsValid}
+          value={passwordState.value}
+          onChange={passwordChangeHandler}
+          onBlur={validatePasswordHandler}
+        />
+      </form>
+    </Card>
+  );
+};
+```
+
+`props.ref`는 없음. props 객체에서 ref를 받아들이지 않음. 작동시키려면?
+
+위 코드에서 Input 컴포넌트에서 activate나 focus를 호출할 수 있다면, Input 컴포넌트를 내장형처럼 사용할 수 있게 됨
+
+`useImperativeHandle(forwardRef로 감싸진 ref, 객체를 반환하는 함수)` 훅
+
+객체를 반환할 때 객체는 내부 함수 또는 내부 변수 또는 무엇이든 그 이름을 통해 외부에서 접근할 수 있어야 하는 것을 가리킴
 
 `React.forwardRef()`
 
-136번 강의부터 2개 강의 다시보기
+```javascript
+const Input = forwardRef((props, ref) => {
+  const inputRef = useRef();
+  const activate = () => inputRef.current.focus();
 
-코드 참고
+  useImperativeHandle(ref, () => {
+    return {
+      focus: activate,
+    };
+  });
+});
+```
+
+이제 Login.js에서 `emailInputRef.current.focus();` 호출 가능. focus란 이름으로 activate가 호출될 것
