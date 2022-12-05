@@ -16,8 +16,6 @@
 
 ## 10 Reducer, ContextAPI
 
-맨 마지막 127번 강의 다시 듣기
-
 ## 11 Food Order App
 
 ## 12 Optimization
