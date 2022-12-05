@@ -94,5 +94,3 @@ const submitHandler = (event) => {
 `bind()`
 
 코드 참고
-
-Context(Provider), Modal 사용법 잘 알아두기
